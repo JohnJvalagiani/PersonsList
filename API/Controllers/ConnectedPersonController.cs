@@ -16,7 +16,6 @@ using service.server.HelperClasses;
 namespace service.server.Controllers
 {
     [Route("api/ConnectedPerson")]
-    [ApiController]
     public class ConnectedPersonController : ControllerBase
     {
         private readonly IPersonManagementsService _personManagementsService;

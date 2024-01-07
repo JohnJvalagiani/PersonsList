@@ -18,7 +18,6 @@ namespace service.server.Controllers
             var exception = context?.Error; 
             var code = 500; // Internal Server Error by default
 
-
             Response.StatusCode = code;
 
             return new MyErrorResponse(exception); 

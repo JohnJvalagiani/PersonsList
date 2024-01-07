@@ -15,7 +15,6 @@ using service.server.HelperClasses;
 namespace service.server.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
     public class PictureController : ControllerBase
     {
 

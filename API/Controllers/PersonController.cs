@@ -21,18 +21,16 @@ using service.server.Services;
 namespace service.server.Controllers
 {
     [Route("api/Person")]
-    [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly IPersonManagementsService _personManagmentService;
+        private readonly IPersonManagementsService _personManagementService;
         private readonly IStringLocalizer<PersonController> _localizer;
         private readonly ILogger<PersonController> _logger;
 
-        public PersonController(IPersonManagementsService personManagmentService,
+        public PersonController(IPersonManagementsService personManagementService,
             IStringLocalizer<PersonController> localizer,ILogger<PersonController> logger)
         {
-            this._personManagmentService = personManagmentService;
-
+            _personManagementService = personManagementService;
             _localizer = localizer;
             _logger = logger;
         }
@@ -48,48 +46,37 @@ namespace service.server.Controllers
         }
 
         [HttpPost("Search")]
-        public async Task<IActionResult> Search( DetailedSearchParametrs detailSearchParametrs)
+        public async Task<IActionResult> Search( DetailedSearchParametrs detailSearchParameters)
         {
+            var result = await _personManagementService.Search(detailSearchParameters);
 
-
-            var result =await _personManagmentService.Search(detailSearchParametrs);
-
+            if (result.Success != true)
+                return NotFound(result);
 
             return Ok(result);
-
         }
 
 
         [HttpPost("Get All Person")]
-        public async Task<IActionResult> GetAllPerson([FromBody]PagingParametrs pagingParametrs)
+        public async Task<IActionResult> GetAllPerson([FromBody]PagingParametrs pagingParameters)
         {
-
                 _logger.LogInformation("Getting All Persons");
 
+                var persons = await _personManagementService.GetAllPersons(pagingParameters);
 
-
-                var persons = await _personManagmentService.GetAllPersons(pagingParametrs);
-
-                
-             
                 return Ok(persons);
-
-
         }
 
 
         [HttpPost("Add person")]
-        public async Task<IActionResult> AddPerson([FromBody]CreatePerson person) {
+        public async Task<IActionResult> AddPerson([FromBody]CreatePerson person) 
+        {
 
           _logger.LogInformation("Adding Person ");
 
-
-          var newPerson=await  _personManagmentService.AddPerson(person);
-
+          var newPerson=await  _personManagementService.AddPerson(person);
               
           return Created(nameof(Person), newPerson);
-                
-
         }
 
         [HttpGet("Get Person By Id {id}")]
@@ -97,59 +84,39 @@ namespace service.server.Controllers
         {
             _logger.LogInformation( "Get  Person {Id}", id);
 
-
-            var theperson = await _personManagmentService.GetPersonById(id);
-
+            var thePerson = await _personManagementService.GetPersonById(id);
           
-            return Ok(theperson);
-
-
+            return Ok(thePerson);
         }
 
         [HttpDelete("Delete Person {id}")]
         public async Task<IActionResult> DeletePerson(int id)
         {
-
-        
          
                 _logger.LogInformation( "Delete  Person {Id}", id);
                 
-
-               var person = await _personManagmentService.DeletePerson(id);
-
-               
+               var person = await _personManagementService.DeletePerson(id);
 
                 return NoContent();
-
-           
-
         }
 
 
         [HttpPut("Update Person")]
         public async Task<IActionResult> EditPerson([FromBody] UpdatePerson person)
         {
-
             _logger.LogInformation( "Update  Person {Id}", person.Id);
 
-
-            var thePerson = await _personManagmentService.UpdatePerson(person);
-
+            var thePerson = await _personManagementService.UpdatePerson(person);
 
              return Ok(thePerson);
-
-           
-
         }
 
         [HttpGet("Get  Persons Report")]
-        public async Task<IActionResult> GetPersonsReport( ConnectedPersonType conectedPersonType)
+        public async Task<IActionResult> GetPersonsReport( ConnectedPersonType connectedPersonType)
         {
-
-            var result = await _personManagmentService.GetConnectedPersonsReport( conectedPersonType);
+            var result = await _personManagementService.GetConnectedPersonsReport( connectedPersonType);
 
             return Ok(result);
-
         }
     }
 }

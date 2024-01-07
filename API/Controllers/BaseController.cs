@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service.Server.Controllers
 {
+    [ApiController]
     public class BaseController:ControllerBase
     {
     }

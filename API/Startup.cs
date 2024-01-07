@@ -44,15 +44,12 @@ namespace service.server
             services.AddSwaggerGen();
 
 
-
-
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 
             services.AddMvc()
                 .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
-
 
         }
 
