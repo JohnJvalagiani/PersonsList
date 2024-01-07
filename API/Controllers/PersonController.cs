@@ -24,11 +24,11 @@ namespace service.server.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
-        private readonly IPersonManagmentService _personManagmentService;
+        private readonly IPersonManagementsService _personManagmentService;
         private readonly IStringLocalizer<PersonController> _localizer;
         private readonly ILogger<PersonController> _logger;
 
-        public PersonController(IPersonManagmentService personManagmentService,
+        public PersonController(IPersonManagementsService personManagmentService,
             IStringLocalizer<PersonController> localizer,ILogger<PersonController> logger)
         {
             this._personManagmentService = personManagmentService;
@@ -146,7 +146,7 @@ namespace service.server.Controllers
         public async Task<IActionResult> GetPersonsReport( ConnectedPersonType conectedPersonType)
         {
 
-            var result = await _personManagmentService.GetConectinedPersonsReport( conectedPersonType);
+            var result = await _personManagmentService.GetConnectedPersonsReport( conectedPersonType);
 
             return Ok(result);
 

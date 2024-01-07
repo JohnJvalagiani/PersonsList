@@ -1,6 +1,7 @@
 ﻿using Core.Services.Abstraction;
 using IG.Core.Data.Entities;
 using Infrastructure.Data;
+using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,17 +21,13 @@ namespace Core.Services.Implementation
         {
             _context = context;
             _set = context.Set<TEntity>();
-
         }
 
         public virtual async Task<TEntity> Add(TEntity entity)
         {
             NullChecker(entity);
 
-
             var _entity = await _set.AddAsync(entity);
-
-            await Save();
 
             return _entity.Entity;
         }
@@ -46,7 +43,7 @@ namespace Core.Services.Implementation
             return await FindElement(Id);
         }
 
-        public virtual async Task<bool> Remove(int Id)
+        public virtual async Task Remove(int Id)
         {
             if (Id <= 0)
                 throw new ArgumentNullException();
@@ -55,48 +52,25 @@ namespace Core.Services.Implementation
 
             _set.Remove(entity);
 
-            return await Save();
         }
 
         public virtual async Task<TEntity> Update(TEntity entity)
         {
-            try
-            {
                 NullChecker(entity);
-
 
                 var _entity = _set.Update(entity);
 
-                await Save();
-
                 return _entity.Entity;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-           
-
         }
-
-        protected async Task<bool> Save() => await _context.SaveChangesAsync() > 0;
 
 
         protected async Task<TEntity> FindElement(int Id) => await _set.FindAsync(Id);
 
-
-
-
-
-        public Task<bool> RemoveRange(IEnumerable<TEntity> entities)
+        public void RemoveRange(IEnumerable<TEntity> entities)
         {
             NullChecker(entities);
 
             _set.RemoveRange(entities);
-
-            return Save();
         }
 
         public virtual void AddRangeAsync(IEnumerable<TEntity> entities)
@@ -107,23 +81,19 @@ namespace Core.Services.Implementation
         public virtual async Task<IEnumerable<TEntity>> GetByQueryAsync(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>,
             IOrderedQueryable<TEntity>> OrderBy = null)
         {
-
             IQueryable<TEntity> query = _set;
 
             if (filter != null)
             {
-
                 query = query.Where(filter);
             }
 
             if (OrderBy != null)
             {
                 return await Task.FromResult(OrderBy(query).AsEnumerable());
-
             }
 
             return query.AsEnumerable();
-
         }
 
         protected void NullChecker(object argument)

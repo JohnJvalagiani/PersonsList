@@ -1,8 +1,12 @@
-﻿using Core.Services;
+﻿using Core.Models;
+using Core.Services;
 using Core.Services.Abstraction;
 using Core.Services.Implementation;
+using Domain.Interfaces;
+using Infrastructure.Data.EFCore.UnitOfWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using service.server.Profiles;
 using service.server.Services;
 using System;
@@ -25,9 +29,13 @@ namespace Service.Server.Installers
 
             services.AddScoped(typeof(IRepo<>), typeof(Repo<>));
 
+            services.AddScoped< IUnitOfWork , UnitOfWork>();
 
-            services.AddScoped<IPersonManagmentService, PersonManagmentService>();
+            services.AddScoped<IPersonManagementsService, PersonManagementsService>();
 
+            services.Configure<FilePathConfig>(configuration.GetSection("FilePathConfig"));
+
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<FilePathConfig>>().Value);
 
         }
     }

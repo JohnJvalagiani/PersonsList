@@ -7,15 +7,15 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Data.Context
 {
-    public class UserDbContext:DbContext
+    public class UserDbContext : DbContext
     {
 
         public DbSet<Person> Persons { get; set; }
 
 
-        public UserDbContext(DbContextOptions<UserDbContext> options):base(options)
+        public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
         {
 
         }
@@ -26,7 +26,7 @@ namespace Infrastructure.Data
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            
+
 
 
             builder.Entity<ConnectedPerson>()

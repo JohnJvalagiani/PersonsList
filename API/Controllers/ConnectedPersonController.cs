@@ -19,14 +19,12 @@ namespace service.server.Controllers
     [ApiController]
     public class ConnectedPersonController : ControllerBase
     {
-
-        private readonly IPersonManagmentService _personManagmentService;
+        private readonly IPersonManagementsService _personManagementsService;
         private readonly ILogger<ConnectedPersonController> _logger;
      
-
-        public ConnectedPersonController(ILogger<ConnectedPersonController> logger,IPersonManagmentService personManagmentService)
+        public ConnectedPersonController(ILogger<ConnectedPersonController> logger,IPersonManagementsService personManagementsService)
         {
-            this._personManagmentService = personManagmentService;
+            this._personManagementsService = personManagementsService;
 
             _logger = logger;
         } 
@@ -36,39 +34,21 @@ namespace service.server.Controllers
         {
               _logger.LogInformation("Add Connected Person {Id}", personId);
 
-              var result = await _personManagmentService.AddConnectinedPerson(personId,connectedPerson);
+              var result = await _personManagementsService.AddConnectedPerson(personId,connectedPerson);
            
               return Created(nameof(ConnectedPerson), connectedPerson);
-
-
-         
         }
 
         [HttpDelete("Remove Connected Person")]
         public async Task<IActionResult> Remove(int connectedPersonId)
         {
-           
-           
-                _logger.LogInformation("Delete Connectined Person {Id}", connectedPersonId);
+                _logger.LogInformation(message: "Delete Connected Person {Id}", connectedPersonId);
 
-
-                var result = await _personManagmentService.RemoveConnectinedPerson(connectedPersonId);
-
+                var result = await _personManagementsService.RemoveConnectedPerson(connectedPersonId);
 
                 return NoContent();
-
-          
         }
-
-
-      
-
-      
-
-
 
         }
 
-
-    
 }

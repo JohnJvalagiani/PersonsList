@@ -19,10 +19,10 @@ namespace service.server.Controllers
     public class PictureController : ControllerBase
     {
 
-        private readonly IPersonManagmentService _personManagmentService;
+        private readonly IPersonManagementsService _personManagmentService;
         private readonly ILogger<PictureController> _logger;
 
-        public PictureController(ILogger<PictureController> logger, IPersonManagmentService personManagmentService)
+        public PictureController(ILogger<PictureController> logger, IPersonManagementsService personManagmentService)
         {
             
             this._personManagmentService= personManagmentService;

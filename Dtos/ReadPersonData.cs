@@ -22,7 +22,7 @@ namespace service.server.Dtos
         public string PhoneNumber { get; set; }
         public string City { get; set; }
         public Gender Sex { get; set; }
-        public List<ConnectedPerson> connectinedPersons { get; set; }
+        public List<ConnectedPerson> connectedPersons { get; set; }
 
         public string Picture { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using Infrastructure.Data;
+﻿using Infrastructure.Data.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
