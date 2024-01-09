@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Implementation
 {
-    public class Repo<TEntity> : IRepo<TEntity> where TEntity : BaseEntity
+    public class Repo<TEntity> : IPersonsRepo<TEntity> where TEntity : BaseEntity
     {
         protected readonly UserDbContext _context;
         protected readonly DbSet<TEntity> _set;

@@ -2,7 +2,7 @@
 using Core.CustomExceptions;
 using Core.Models;
 using Core.Services.Abstraction;
-using Domain.Interfaces;
+using Domain.Interfaces.Repository;
 using Dtos.Dtos;
 using FluentValidation;
 using IG.Core.Data.Entities;
@@ -28,14 +28,14 @@ namespace Infrastructure.Services
         private readonly PersonValidation _validator;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IRepo<Person> _personsRepo;
-        private readonly IRepo<ConnectedPerson> _connectedPersonRepo;
+        private readonly IPersonsRepo _personsRepo;
+        private readonly IConnectedPersonsRepo _connectedPersonRepo;
         private readonly ILogger<PersonManagementsService> _logger;
         private readonly IOptions<FilePathConfig> _filePathConfig;
 
 
         public PersonManagementsService(IOptions<FilePathConfig> filePathConfig, ILogger<PersonManagementsService> logger, IUnitOfWork unitOfWork,
-            PersonValidation validator, IMapper mapper, IRepo<Person> repo, IRepo<ConnectedPerson> connectedPersonRepo)
+            PersonValidation validator, IMapper mapper, IPersonsRepo repo, IConnectedPersonsRepo connectedPersonRepo)
         {
             _filePathConfig = filePathConfig ?? throw new ArgumentNullException(nameof(filePathConfig));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

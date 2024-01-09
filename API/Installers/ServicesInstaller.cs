@@ -2,9 +2,8 @@
 using Core.Services;
 using Core.Services.Abstraction;
 using Core.Services.Implementation;
-using Domain.Interfaces;
+using Domain.Interfaces.Repository;
 using Infrastructure.Data.EFCore.UnitOfWork;
-using Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -28,7 +27,7 @@ namespace Service.Server.Installers
 
             services.AddScoped<ConnectedPersonValidation>();
 
-            services.AddScoped(typeof(IRepo<>), typeof(Repo<>));
+            services.AddScoped(typeof(IPersonsRepo<>), typeof(Repo<>));
 
             services.AddScoped< IUnitOfWork , UnitOfWork>();
 
