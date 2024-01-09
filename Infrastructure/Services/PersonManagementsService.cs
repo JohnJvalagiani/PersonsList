@@ -3,7 +3,7 @@ using Core.CustomExceptions;
 using Core.Models;
 using Core.Services.Abstraction;
 using Domain.Interfaces;
-using Dtos;
+using Dtos.Dtos;
 using FluentValidation;
 using IG.Core.Data.Entities;
 using Infrastructure.Data.EFCore.UnitOfWork;
@@ -21,7 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Services.Implementation
+namespace Infrastructure.Services
 {
     public class PersonManagementsService : IPersonManagementsService
     {
@@ -34,8 +34,8 @@ namespace Core.Services.Implementation
         private readonly IOptions<FilePathConfig> _filePathConfig;
 
 
-        public PersonManagementsService(IOptions<FilePathConfig> filePathConfig,ILogger<PersonManagementsService> logger,IUnitOfWork unitOfWork,
-            PersonValidation validator,IMapper mapper,IRepo<Person> repo, IRepo<ConnectedPerson> connectedPersonRepo)
+        public PersonManagementsService(IOptions<FilePathConfig> filePathConfig, ILogger<PersonManagementsService> logger, IUnitOfWork unitOfWork,
+            PersonValidation validator, IMapper mapper, IRepo<Person> repo, IRepo<ConnectedPerson> connectedPersonRepo)
         {
             _filePathConfig = filePathConfig ?? throw new ArgumentNullException(nameof(filePathConfig));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -514,7 +514,7 @@ namespace Core.Services.Implementation
 
                 await _personsRepo.Update(thePerson);
                 await _unitOfWork.CommitAsync();
-                
+
                 response.Success = true;
                 response.Data = filePath;
 
@@ -537,7 +537,7 @@ namespace Core.Services.Implementation
         {
             var dateTimeNow = DateTime.Now;
 
-            var age= dateTimeNow.AddYears(-birthDate.Year);
+            var age = dateTimeNow.AddYears(-birthDate.Year);
 
             return age.Year > 18;
         }

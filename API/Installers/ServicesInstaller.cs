@@ -4,6 +4,7 @@ using Core.Services.Abstraction;
 using Core.Services.Implementation;
 using Domain.Interfaces;
 using Infrastructure.Data.EFCore.UnitOfWork;
+using Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Dtos;
+using Dtos.Dtos;
 using IG.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using service.server.Dtos;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Abstraction
 {
-  public interface IPersonManagementsService
+    public interface IPersonManagementsService
     {
         Task<ServiceResponse<ReadPersonData>> AddPerson(CreatePerson createPerson);
         Task<ServiceResponse<ReadPersonData>> UpdatePerson(UpdatePerson updatePerson);

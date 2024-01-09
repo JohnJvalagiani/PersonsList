@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dtos
+namespace Dtos.Dtos
 {
- public class ConectinedPersonsReport
+    public class ConectinedPersonsReport
     {
         public string Firstname { get; set; }
         public string Laststname { get; set; }

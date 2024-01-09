@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Services.Abstraction;
-using Dtos;
+using Dtos.Dtos;
 using FluentValidation;
 using IG.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;

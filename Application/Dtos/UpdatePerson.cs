@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dtos
+namespace Dtos.Dtos
 {
-  public  class UpdatePerson
+    public class UpdatePerson
     {
         public int Id { get; set; }
         public string FirstNameENG { get; set; }

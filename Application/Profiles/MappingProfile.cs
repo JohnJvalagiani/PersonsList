@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Dtos;
+using Dtos.Dtos;
 using IG.Core.Data.Entities;
 using service.server.Dtos;
 using System;

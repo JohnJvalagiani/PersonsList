@@ -6,11 +6,11 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Core.Services.Abstraction;
+using Dtos.Dtos;
 using IG.Core.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using service.server.Dtos;
 using service.server.HelperClasses;
 
 namespace service.server.Controllers

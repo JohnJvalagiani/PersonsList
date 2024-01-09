@@ -20,7 +20,7 @@ namespace Infrastructure.Data.EFCore.UnitOfWork
             this.dbContext = dbContext;
         }
 
-        public async Task<bool> Commit()
+        public async Task<bool> CommitAsync()
         {
             // Save changes to the database
             var success = (await dbContext.SaveChangesAsync()) > 0;
