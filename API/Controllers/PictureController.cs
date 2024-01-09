@@ -18,30 +18,21 @@ namespace service.server.Controllers
     public class PictureController : ControllerBase
     {
 
-        private readonly IPersonManagementsService _personManagmentService;
+        private readonly IPersonManagementsService _personManagementService;
         private readonly ILogger<PictureController> _logger;
 
-        public PictureController(ILogger<PictureController> logger, IPersonManagementsService personManagmentService)
+        public PictureController(ILogger<PictureController> logger, IPersonManagementsService personManagementService)
         {
-            
-            this._personManagmentService= personManagmentService;
-
+             _personManagementService= personManagementService;
              _logger = logger;
         }
 
         [HttpPost("Add  Person Picture")]
         public async Task<IActionResult> AddPicture(int id,IFormFile formFile)
         {
-           
                 _logger.LogInformation( "Add Picture  {Id}", id);
-
-
-                var picturepath = await _personManagmentService.UploadPersonPicture(id,  formFile);
-
-
-                return Ok(picturepath);
-            
-
+                var picturePath = await _personManagementService.UploadPersonPicture(id,  formFile);
+                return Ok(picturePath);
         }
 
       
@@ -50,14 +41,8 @@ namespace service.server.Controllers
         public async Task<IActionResult> Update(int id, IFormFile formFile)
         {
             _logger.LogInformation("Add Picture  {Id}", id);
-
-
-            var picturepath = await _personManagmentService.UpdatePersonPicture(id, formFile);
-
-
-            return Ok(picturepath);
-
-
+            var picturePath = await _personManagementService.UpdatePersonPicture(id, formFile);
+            return Ok(picturePath);
         }
     }
 }
