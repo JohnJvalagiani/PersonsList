@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace service.server.Models
 {
-    public class DetailedSearchParametrs
+    public class DetailedSearchParameters
     {
-        public PagingParametrs pagingParametrs { get; set; }
+        public PagingParameters pagingParameters { get; set; }
         public person SearchPersonsBy { get; set; }
-        public person OrderPersonsby { get; set; }
+        public person OrderPersonsBy { get; set; }
         public string SearchValue { get; set; }
 
     }

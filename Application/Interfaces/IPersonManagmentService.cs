@@ -21,8 +21,8 @@ namespace Core.Services.Abstraction
         Task<ServiceResponse<bool>> RemoveConnectedPerson(int ConnectedPersonId);
         Task<ServiceResponse<ReadPersonData>> GetPersonById(int PersonId);
         Task<ServiceResponse<IEnumerable<ConectinedPersonsReport>>> GetConnectedPersonsReport(ConnectedPersonType ConnectingType);
-        Task<ServiceResponse<IEnumerable<ReadPersonData>>> GetAllPersons(PagingParametrs pagingParameters);
-        Task<ServiceResponse<IEnumerable<ReadPersonData>>> Search(DetailedSearchParametrs searchParameters);
+        Task<ServiceResponse<IEnumerable<ReadPersonData>>> GetAllPersons(PagingParameters pagingParameters);
+        Task<ServiceResponse<IEnumerable<ReadPersonData>>> Search(DetailedSearchParameters searchParameters);
         Task<ServiceResponse<bool>> DeletePerson(int PersonId);
     }
 }

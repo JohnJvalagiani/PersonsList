@@ -46,7 +46,7 @@ namespace service.server.Controllers
         }
 
         [HttpPost("Search")]
-        public async Task<IActionResult> Search( DetailedSearchParametrs detailSearchParameters)
+        public async Task<IActionResult> Search( DetailedSearchParameters detailSearchParameters)
         {
             var result = await _personManagementService.Search(detailSearchParameters);
 
@@ -58,7 +58,7 @@ namespace service.server.Controllers
 
 
         [HttpPost("Get All Person")]
-        public async Task<IActionResult> GetAllPerson([FromBody]PagingParametrs pagingParameters)
+        public async Task<IActionResult> GetAllPerson([FromBody]PagingParameters pagingParameters)
         {
                 _logger.LogInformation("Getting All Persons");
 

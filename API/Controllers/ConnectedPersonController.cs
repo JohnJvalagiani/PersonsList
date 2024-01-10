@@ -8,6 +8,8 @@ using AutoMapper;
 using Core.Services.Abstraction;
 using Dtos.Dtos;
 using IG.Core.Data.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,13 +20,14 @@ namespace service.server.Controllers
     [Route("api/ConnectedPerson")]
     public class ConnectedPersonController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly IPersonManagementsService _personManagementsService;
         private readonly ILogger<ConnectedPersonController> _logger;
      
-        public ConnectedPersonController(ILogger<ConnectedPersonController> logger,IPersonManagementsService personManagementsService)
+        public ConnectedPersonController(IMediator mediator,ILogger<ConnectedPersonController> logger,IPersonManagementsService personManagementsService)
         {
-            this._personManagementsService = personManagementsService;
-
+           _personManagementsService = personManagementsService;
+            _mediator = mediator;
             _logger = logger;
         } 
 

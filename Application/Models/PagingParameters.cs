@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace service.server.Models
 {
-    public class PagingParametrs
+    public class PagingParameters
     {
 
         const int maxPageSize = 50;

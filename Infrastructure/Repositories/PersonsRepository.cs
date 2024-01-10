@@ -1,7 +1,9 @@
 ﻿using Core.Services.Abstraction;
+using Domain.Models;
 using IG.Core.Data.Entities;
 using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using service.server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,9 +38,22 @@ namespace Domain.Interfaces.Repository
             if (Id <= 0)
                 throw new ArgumentNullException();
 
-            return await FindElement(Id);
+            return await _context.Persons
+            .Include(p => p.ConnectedPerson)
+            .FirstOrDefaultAsync(p => p.Id == Id);
         }
+        public async Task<IEnumerable<ConnectedPersonsReport>> GetConnectedPersonsReportByType(ConnectedPersonType connectedPersonType)
+        {
+            var query = from person in _context.Persons
+                        where person.ConnectedPerson.Any(cp => cp.PersonType == connectedPersonType)
+                        select new ConnectedPersonsReport
+                        {
+                            PersonName = person.FirstNameENG,
+                            ConnectedPersonsCount = person.ConnectedPerson.Count(cp => cp.PersonType == connectedPersonType)
+                        };
 
+            return await query.ToListAsync();
+        }
         public async Task<bool> RemoveAsync(int Id)
         {
             if (Id <= 0)

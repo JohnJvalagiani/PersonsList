@@ -46,255 +46,242 @@ namespace Infrastructure.Services
             _connectedPersonRepo = connectedPersonRepo ?? throw new ArgumentNullException(nameof(connectedPersonRepo));
         }
 
-        public async Task<ServiceResponse<ReadConnectedPerson>> AddConnectedPerson(int id, WriteConnectedPerson connectedPerson)
-        {
-            var response = new ServiceResponse<ReadConnectedPerson>();
-            _unitOfWork.BeginTransaction();
+        //public async Task<ServiceResponse<ReadConnectedPerson>> AddConnectedPerson(int id, WriteConnectedPerson connectedPerson)
+        //{
+        //    var response = new ServiceResponse<ReadConnectedPerson>();
 
-            try
-            {
-                var theConnectedPerson = _mapper.Map<ConnectedPerson>(connectedPerson);
+        //    try
+        //    {
+        //        var theConnectedPerson = _mapper.Map<ConnectedPerson>(connectedPerson);
 
-                var person = await _personsRepo.GetById(id);
+        //        var person = await _personsRepo.GetById(id);
 
-                if (person == null)
-                {
-                    _logger.LogError($"Person not found with id {id}");
+        //        if (person == null)
+        //        {
+        //            _logger.LogError($"Person not found with id {id}");
 
-                    throw new PersonNotFoundException($"Person not found with id {id}");
-                }
+        //            throw new PersonNotFoundException($"Person not found with id {id}");
+        //        }
 
-                theConnectedPerson.PersonId = id;
+        //        theConnectedPerson.PersonId = id;
 
-                person.ConnectedPerson.Add(theConnectedPerson);
+        //        person.ConnectedPerson.Add(theConnectedPerson);
 
-                await _personsRepo.Update(person);
+        //        await _personsRepo.Update(person);
 
-                await _unitOfWork.CommitAsync();
 
-                response.Success = true;
-                response.Data = _mapper.Map<ReadConnectedPerson>(theConnectedPerson);
-                return response;
-            }
-            catch (PersonNotFoundException ex)
-            {
-                _logger.LogError($"Person not found: {ex.Message}");
-                _unitOfWork.Rollback();
+        //        response.Success = true;
+        //        response.Data = _mapper.Map<ReadConnectedPerson>(theConnectedPerson);
+        //        return response;
+        //    }
+        //    catch (PersonNotFoundException ex)
+        //    {
+        //        _logger.LogError($"Person not found: {ex.Message}");
+        //        _unitOfWork.Rollback();
 
-                response.Success = false;
-                response.ErrorMessage = $"Person not found: {ex.Message}";
+        //        response.Success = false;
+        //        response.ErrorMessage = $"Person not found: {ex.Message}";
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
-                _unitOfWork.Rollback();
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
+        //        _unitOfWork.Rollback();
 
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
 
-                return response;
-            }
-        }
+        //        return response;
+        //    }
+        //}
 
-        public async Task<ServiceResponse<ReadPersonData>> AddPerson(CreatePerson createPerson)
-        {
-            var response = new ServiceResponse<ReadPersonData>();
-            _unitOfWork.BeginTransaction();
-            try
-            {
-                var thePerson = _mapper.Map<Person>(createPerson);
+        //public async Task<ServiceResponse<ReadPersonData>> AddPerson(CreatePerson createPerson)
+        //{
+        //    var response = new ServiceResponse<ReadPersonData>();
+        //    _unitOfWork.BeginTransaction();
+        //    try
+        //    {
+        //        var thePerson = _mapper.Map<Person>(createPerson);
 
-                var validateResult = await _validator.ValidateAsync(thePerson);
+        //        var validateResult = await _validator.ValidateAsync(thePerson);
 
-                await _validator.ValidateAndThrowAsync(thePerson);
+        //        await _validator.ValidateAndThrowAsync(thePerson);
 
-                if (!validateResult.IsValid)
-                {
-                    response.Success = false;
-                    response.ErrorMessage = string.Join(", ", validateResult.Errors.Select(error => error.ErrorMessage));
-                    return response;
-                }
+        //        if (!validateResult.IsValid)
+        //        {
+        //            response.Success = false;
+        //            response.ErrorMessage = string.Join(", ", validateResult.Errors.Select(error => error.ErrorMessage));
+        //            return response;
+        //        }
 
-                if (!AgeValidation(createPerson.BirthDate))
-                {
-                    response.Success = false;
-                    response.ErrorMessage = "Invalid Age";
-                    return response;
-                }
+        //        if (!AgeValidation(createPerson.BirthDate))
+        //        {
+        //            response.Success = false;
+        //            response.ErrorMessage = "Invalid Age";
+        //            return response;
+        //        }
 
-                var result = await _personsRepo.Add(thePerson);
-                await _unitOfWork.CommitAsync();
+        //        var result = await _personsRepo.Add(thePerson);
+        //        await _unitOfWork.CommitAsync();
 
-                response.Success = true;
-                response.Data = _mapper.Map<ReadPersonData>(result);
+        //        response.Success = true;
+        //        response.Data = _mapper.Map<ReadPersonData>(result);
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
-                _unitOfWork.Rollback();
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
+        //        _unitOfWork.Rollback();
 
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
 
-                return response;
-            }
-        }
+        //        return response;
+        //    }
+        //}
 
 
 
-        public async Task<ServiceResponse<bool>> DeletePerson(int personId)
-        {
-            var response = new ServiceResponse<bool>();
+        //public async Task<bool> DeletePerson(int personId)
+        //{
 
-            try
-            {
-                var person = await _personsRepo.GetById(personId);
+        //    try
+        //    {
+        //        var person = await _personsRepo.GetById(personId);
 
-                if (person == null)
-                {
-                    _logger.LogError($"Person not found with id {personId}");
+        //        if (person == null)
+        //        {
+        //            _logger.LogError($"Person not found with id {personId}");
 
-                    response.Success = false;
-                    response.ErrorMessage = $"Person not found with id {personId}";
 
-                    return response;
-                }
+        //            return response;
+        //        }
 
-                await _personsRepo.Remove(personId);
-                await _unitOfWork.CommitAsync();
+        //        await _personsRepo.Remove(personId);
+        //        await _unitOfWork.CommitAsync();
 
-                response.Success = true;
-                response.Data = true;
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
-                _unitOfWork.Rollback();
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
+        //    }
+        //}
 
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
+        //public async Task<ServiceResponse<IEnumerable<ReadPersonData>>> GetAllPersons(PagingParameters pagingParametrs)
+        //{
+        //    var response = new ServiceResponse<IEnumerable<ReadPersonData>>();
 
-                return response;
-            }
-        }
+        //    try
+        //    {
+        //        var persons = await _personsRepo.GetAll();
 
-        public async Task<ServiceResponse<IEnumerable<ReadPersonData>>> GetAllPersons(PagingParametrs pagingParametrs)
-        {
-            var response = new ServiceResponse<IEnumerable<ReadPersonData>>();
+        //        var thePersons = persons.Select(p => _mapper.Map<ReadPersonData>(p));
 
-            try
-            {
-                var persons = await _personsRepo.GetAll();
+        //        var result = PagedList<ReadPersonData>
+        //            .ToPagedList(thePersons.AsQueryable(), pagingParametrs.PageNumber, pagingParametrs.PageSize);
 
-                var thePersons = persons.Select(p => _mapper.Map<ReadPersonData>(p));
+        //        response.Success = true;
+        //        response.Data = result;
 
-                var result = PagedList<ReadPersonData>
-                    .ToPagedList(thePersons.AsQueryable(), pagingParametrs.PageNumber, pagingParametrs.PageSize);
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
 
-                response.Success = true;
-                response.Data = result;
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
+        //        return response;
+        //    }
+        //}
 
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
+        //public async Task<ServiceResponse<IEnumerable<ConectinedPersonsReport>>> GetConnectedPersonsReport(ConnectedPersonType connectingType)
+        //{
+        //    var response = new ServiceResponse<IEnumerable<ConectinedPersonsReport>>();
 
-                return response;
-            }
-        }
+        //    try
+        //    {
+        //        var persons = await _personsRepo.GetAll();
+        //        var report = new List<ConectinedPersonsReport>();
 
-        public async Task<ServiceResponse<IEnumerable<ConectinedPersonsReport>>> GetConnectedPersonsReport(ConnectedPersonType connectingType)
-        {
-            var response = new ServiceResponse<IEnumerable<ConectinedPersonsReport>>();
+        //        foreach (var item in persons)
+        //        {
+        //            var predicate = GenericExpressionTree.CreateWhereClause<ConnectedPerson>("PersonId", item.Id);
 
-            try
-            {
-                var persons = await _personsRepo.GetAll();
-                var report = new List<ConectinedPersonsReport>();
+        //            var connectedPersons = await _connectedPersonRepo.GetByQueryAsync(predicate);
 
-                foreach (var item in persons)
-                {
-                    var predicate = GenericExpressionTree.CreateWhereClause<ConnectedPerson>("PersonId", item.Id);
+        //            var thePersons = connectedPersons.Where(s => s.PersonType.Equals(connectingType)).Select(s => s).AsEnumerable();
 
-                    var connectedPersons = await _connectedPersonRepo.GetByQueryAsync(predicate);
+        //            report.Add(new ConectinedPersonsReport
+        //            {
+        //                Firstname = item.FirstNameENG,
+        //                Laststname = item.LastNameENG,
+        //                ConnectinedPersonCount = thePersons.Count()
+        //            });
+        //        }
 
-                    var thePersons = connectedPersons.Where(s => s.PersonType.Equals(connectingType)).Select(s => s).AsEnumerable();
+        //        response.Success = true;
+        //        response.Data = report;
 
-                    report.Add(new ConectinedPersonsReport
-                    {
-                        Firstname = item.FirstNameENG,
-                        Laststname = item.LastNameENG,
-                        ConnectinedPersonCount = thePersons.Count()
-                    });
-                }
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
 
-                response.Success = true;
-                response.Data = report;
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
+        //        return response;
+        //    }
+        //}
 
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
+        //public async Task<ServiceResponse<ReadPersonData>> GetPersonById(int personId)
+        //{
+        //    var response = new ServiceResponse<ReadPersonData>();
 
-                return response;
-            }
-        }
+        //    try
+        //    {
+        //        var result = await _personsRepo.GetById(personId);
 
-        public async Task<ServiceResponse<ReadPersonData>> GetPersonById(int personId)
-        {
-            var response = new ServiceResponse<ReadPersonData>();
+        //        if (result == null)
+        //        {
+        //            _logger.LogError($"Person not found with id {personId}");
 
-            try
-            {
-                var result = await _personsRepo.GetById(personId);
+        //            response.Success = false;
+        //            response.ErrorMessage = $"Person not found with id {personId}";
 
-                if (result == null)
-                {
-                    _logger.LogError($"Person not found with id {personId}");
+        //            return response;
+        //        }
 
-                    response.Success = false;
-                    response.ErrorMessage = $"Person not found with id {personId}";
+        //        var thePerson = _mapper.Map<ReadPersonData>(result);
 
-                    return response;
-                }
+        //        var predicate = GenericExpressionTree.CreateWhereClause<ConnectedPerson>("PersonId", personId);
 
-                var thePerson = _mapper.Map<ReadPersonData>(result);
+        //        var connectedPersons = await _connectedPersonRepo.GetByQueryAsync(predicate);
 
-                var predicate = GenericExpressionTree.CreateWhereClause<ConnectedPerson>("PersonId", personId);
+        //        thePerson.connectedPersons = connectedPersons?.ToList() ?? new List<ConnectedPerson>();
 
-                var connectedPersons = await _connectedPersonRepo.GetByQueryAsync(predicate);
+        //        response.Success = true;
+        //        response.Data = thePerson;
 
-                thePerson.connectedPersons = connectedPersons?.ToList() ?? new List<ConnectedPerson>();
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
 
-                response.Success = true;
-                response.Data = thePerson;
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
-
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
-
-                return response;
-            }
-        }
+        //        return response;
+        //    }
+        //}
 
         public async Task<ServiceResponse<bool>> RemoveConnectedPerson(int connectedPersonId)
         {
@@ -334,7 +321,7 @@ namespace Infrastructure.Services
             }
         }
 
-        public async Task<ServiceResponse<IEnumerable<ReadPersonData>>> Search(DetailedSearchParametrs detailSearchParametrs)
+        public async Task<ServiceResponse<IEnumerable<ReadPersonData>>> Search(DetailedSearchParameters detailSearchParametrs)
         {
             var response = new ServiceResponse<IEnumerable<ReadPersonData>>();
 
@@ -351,7 +338,7 @@ namespace Infrastructure.Services
         };
 
                 // Determine the orderByFunc using the dictionary or fallback to a default order
-                var orderByFunc = orderByFunctions.GetValueOrDefault(detailSearchParametrs.OrderPersonsby, q => q.OrderBy(p => p.FirstNameENG));
+                var orderByFunc = orderByFunctions.GetValueOrDefault(detailSearchParametrs.OrderPersonsBy, q => q.OrderBy(p => p.FirstNameENG));
 
                 var predicate = GenericExpressionTree.CreateWhereClause<Person>(detailSearchParametrs.SearchPersonsBy.ToString(), detailSearchParametrs.SearchValue);
 
@@ -360,7 +347,7 @@ namespace Infrastructure.Services
                 var thePersons = persons.Select(p => _mapper.Map<ReadPersonData>(p));
 
                 var result = PagedList<ReadPersonData>
-                    .ToPagedList(thePersons.AsQueryable(), detailSearchParametrs.pagingParametrs.PageNumber, detailSearchParametrs.pagingParametrs.PageSize);
+                    .ToPagedList(thePersons.AsQueryable(), detailSearchParametrs.pagingParameters.PageNumber, detailSearchParametrs.pagingParameters.PageSize);
 
                 response.Success = true;
                 response.Data = result;
@@ -378,159 +365,159 @@ namespace Infrastructure.Services
             }
         }
 
-        public async Task<ServiceResponse<ReadPersonData>> UpdatePerson(UpdatePerson person)
-        {
-            var response = new ServiceResponse<ReadPersonData>();
-            _unitOfWork.BeginTransaction();
+        //public async Task<ServiceResponse<ReadPersonData>> UpdatePerson(UpdatePerson person)
+        //{
+        //    var response = new ServiceResponse<ReadPersonData>();
+        //    _unitOfWork.BeginTransaction();
 
-            try
-            {
-                var thePerson = _mapper.Map<Person>(person);
+        //    try
+        //    {
+        //        var thePerson = _mapper.Map<Person>(person);
 
-                var validateResult = await _validator.ValidateAsync(thePerson);
+        //        var validateResult = await _validator.ValidateAsync(thePerson);
 
-                await _validator.ValidateAndThrowAsync(thePerson);
+        //        await _validator.ValidateAndThrowAsync(thePerson);
 
-                if (!validateResult.IsValid)
-                {
-                    response.Success = false;
-                    response.ErrorMessage = string.Join(", ", validateResult.Errors.Select(error => error.ErrorMessage));
-                    return response;
-                }
+        //        if (!validateResult.IsValid)
+        //        {
+        //            response.Success = false;
+        //            response.ErrorMessage = string.Join(", ", validateResult.Errors.Select(error => error.ErrorMessage));
+        //            return response;
+        //        }
 
-                thePerson = await _personsRepo.Update(thePerson);
-                await _unitOfWork.CommitAsync();
+        //        thePerson = await _personsRepo.Update(thePerson);
+        //        await _unitOfWork.CommitAsync();
 
-                response.Success = true;
-                response.Data = _mapper.Map<ReadPersonData>(thePerson);
+        //        response.Success = true;
+        //        response.Data = _mapper.Map<ReadPersonData>(thePerson);
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
-                _unitOfWork.Rollback();
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
+        //        _unitOfWork.Rollback();
 
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
 
-                return response;
-            }
-        }
-
-
-        public async Task<ServiceResponse<string>> UpdatePersonPicture(int id, IFormFile formFile)
-        {
-            var response = new ServiceResponse<string>();
-            _unitOfWork.BeginTransaction();
-
-            try
-            {
-                var thePerson = await _personsRepo.GetById(id);
-
-                if (thePerson == null)
-                {
-                    response.Success = false;
-                    response.ErrorMessage = "Person not found with the specified id";
-                    return response;
-                }
-
-                if (formFile.Length <= 0)
-                {
-                    response.Success = false;
-                    response.ErrorMessage = "Picture file is empty or null";
-                    return response;
-                }
-
-                if (File.Exists(thePerson.Picture))
-                {
-                    File.Delete(thePerson.Picture);
-                }
-
-                var basePath = _filePathConfig.Value.BasePath;
-
-                string filePath = Path.Combine(basePath, formFile.FileName);
-
-                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await formFile.CopyToAsync(fileStream);
-                }
-
-                thePerson.Picture = filePath;
-
-                await _personsRepo.Update(thePerson);
-                await _unitOfWork.CommitAsync();
-
-                response.Success = true;
-                response.Data = filePath;
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
-                _unitOfWork.Rollback();
-
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
-
-                return response;
-            }
-        }
+        //        return response;
+        //    }
+        //}
 
 
-        public async Task<ServiceResponse<string>> UploadPersonPicture(int id, IFormFile formFile)
-        {
-            var response = new ServiceResponse<string>();
-            _unitOfWork.BeginTransaction();
+        //public async Task<ServiceResponse<string>> UpdatePersonPicture(int id, IFormFile formFile)
+        //{
+        //    var response = new ServiceResponse<string>();
+        //    _unitOfWork.BeginTransaction();
 
-            try
-            {
-                var thePerson = await _personsRepo.GetById(id);
+        //    try
+        //    {
+        //        var thePerson = await _personsRepo.GetById(id);
 
-                if (thePerson == null)
-                {
-                    response.Success = false;
-                    response.ErrorMessage = "Person not found with the specified id";
-                    return response;
-                }
+        //        if (thePerson == null)
+        //        {
+        //            response.Success = false;
+        //            response.ErrorMessage = "Person not found with the specified id";
+        //            return response;
+        //        }
 
-                if (formFile.Length <= 0)
-                {
-                    response.Success = false;
-                    response.ErrorMessage = "Picture file is empty or null";
-                    return response;
-                }
+        //        if (formFile.Length <= 0)
+        //        {
+        //            response.Success = false;
+        //            response.ErrorMessage = "Picture file is empty or null";
+        //            return response;
+        //        }
 
-                var basePath = _filePathConfig.Value.BasePath;
-                string filePath = Path.Combine(basePath, formFile.FileName);
+        //        if (File.Exists(thePerson.Picture))
+        //        {
+        //            File.Delete(thePerson.Picture);
+        //        }
 
-                using (Stream fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await formFile.CopyToAsync(fileStream);
-                }
+        //        var basePath = _filePathConfig.Value.BasePath;
 
-                thePerson.Picture = filePath;
+        //        string filePath = Path.Combine(basePath, formFile.FileName);
 
-                await _personsRepo.Update(thePerson);
-                await _unitOfWork.CommitAsync();
+        //        using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            await formFile.CopyToAsync(fileStream);
+        //        }
 
-                response.Success = true;
-                response.Data = filePath;
+        //        thePerson.Picture = filePath;
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"An error occurred: {ex.Message}");
-                _unitOfWork.Rollback();
+        //        await _personsRepo.Update(thePerson);
+        //        await _unitOfWork.CommitAsync();
 
-                response.Success = false;
-                response.ErrorMessage = $"An error occurred: {ex.Message}";
+        //        response.Success = true;
+        //        response.Data = filePath;
 
-                return response;
-            }
-        }
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
+        //        _unitOfWork.Rollback();
+
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
+
+        //        return response;
+        //    }
+        //}
+
+
+        //public async Task<ServiceResponse<string>> UploadPersonPicture(int id, IFormFile formFile)
+        //{
+        //    var response = new ServiceResponse<string>();
+        //    _unitOfWork.BeginTransaction();
+
+        //    try
+        //    {
+        //        var thePerson = await _personsRepo.GetById(id);
+
+        //        if (thePerson == null)
+        //        {
+        //            response.Success = false;
+        //            response.ErrorMessage = "Person not found with the specified id";
+        //            return response;
+        //        }
+
+        //        if (formFile.Length <= 0)
+        //        {
+        //            response.Success = false;
+        //            response.ErrorMessage = "Picture file is empty or null";
+        //            return response;
+        //        }
+
+        //        var basePath = _filePathConfig.Value.BasePath;
+        //        string filePath = Path.Combine(basePath, formFile.FileName);
+
+        //        using (Stream fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            await formFile.CopyToAsync(fileStream);
+        //        }
+
+        //        thePerson.Picture = filePath;
+
+        //        await _personsRepo.Update(thePerson);
+        //        await _unitOfWork.CommitAsync();
+
+        //        response.Success = true;
+        //        response.Data = filePath;
+
+        //        return response;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"An error occurred: {ex.Message}");
+        //        _unitOfWork.Rollback();
+
+        //        response.Success = false;
+        //        response.ErrorMessage = $"An error occurred: {ex.Message}";
+
+        //        return response;
+        //    }
+        //}
 
 
         private static bool AgeValidation(DateTime birthDate)

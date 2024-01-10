@@ -1,4 +1,5 @@
 ﻿using Domain.Interfaces.Repository;
+using Domain.Models;
 using IG.Core.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,5 +21,6 @@ namespace Core.Services.Abstraction
         Task<bool> RemoveAsync(int Id);
         bool RemoveRangeAsync(IEnumerable<Person> entities);
         Person Update(Person entity);
+        Task<IEnumerable<ConnectedPersonsReport>> GetConnectedPersonsReportByType(ConnectedPersonType connectedPersonType);
     }
 }
