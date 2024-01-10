@@ -1,4 +1,4 @@
-﻿using Core.Services.Abstraction;
+﻿using Domain.Interfaces.Repository;
 using IG.Core.Data.Entities;
 using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -9,29 +9,29 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Interfaces.Repository
+namespace Infrastructure.Repositories
 {
-    public class PersonsRepository : IPersonsRepo
+    public class ConnectedPersonRepo : IConnectedPersonsRepo
     {
         protected readonly UserDbContext _context;
-        protected readonly DbSet<Person> _set;
+        protected readonly DbSet<ConnectedPerson> _set;
         public IUnitOfWork UnitOfWork => _context;
-        public PersonsRepository(UserDbContext context)
+        public ConnectedPersonRepo(UserDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _set = context.Set<Person>();
-
+            _set = context.Set<ConnectedPerson>();
         }
-        public  async Task<Person> AddAsync(Person entity)
+
+        public async Task<ConnectedPerson> AddAsync(ConnectedPerson entity)
         {
             NullChecker(entity);
             var _entity = await _set.AddAsync(entity);
             return _entity.Entity;
         }
 
-        public  async Task<IEnumerable<Person>> GetAllAsync() => await _set.ToListAsync();
+        public async Task<IEnumerable<ConnectedPerson>> GetAllAsync() => await _set.ToListAsync();
 
-        public  async Task<Person> GetByIdAsync(int Id)
+        public async Task<ConnectedPerson> GetByIdAsync(int Id)
         {
             if (Id <= 0)
                 throw new ArgumentNullException();
@@ -48,31 +48,31 @@ namespace Domain.Interfaces.Repository
             return true;
         }
 
-        public  Person Update(Person entity)
+        public ConnectedPerson Update(ConnectedPerson entity)
         {
-                NullChecker(entity);
-                var _entity = _set.Update(entity);
-                return _entity.Entity;
+            NullChecker(entity);
+            var _entity = _set.Update(entity);
+            return _entity.Entity;
         }
 
-        private async Task<Person> FindElement(int Id) => await _set.FindAsync(Id);
+        private async Task<ConnectedPerson> FindElement(int Id) => await _set.FindAsync(Id);
 
-        public bool RemoveRangeAsync(IEnumerable<Person> entities)
+        public bool RemoveRangeAsync(IEnumerable<ConnectedPerson> entities)
         {
-             NullChecker(entities);
+            NullChecker(entities);
             _set.RemoveRange(entities);
-             return true;
+            return true;
         }
 
-        public async Task AddRangeAsync(IEnumerable<Person> entities)
+        public async Task AddRangeAsync(IEnumerable<ConnectedPerson> entities)
         {
-           await _set.AddRangeAsync(entities);
+            await _set.AddRangeAsync(entities);
         }
 
-        public  async Task<IEnumerable<Person>> GetByQueryAsync(Expression<Func<Person, bool>> filter = null, Func<IQueryable<Person>,
-            IOrderedQueryable<Person>> OrderBy = null)
+        public async Task<IEnumerable<ConnectedPerson>> GetByQueryAsync(Expression<Func<ConnectedPerson, bool>> filter = null, Func<IQueryable<ConnectedPerson>,
+            IOrderedQueryable<ConnectedPerson>> OrderBy = null)
         {
-            IQueryable<Person> query = _set;
+            IQueryable<ConnectedPerson> query = _set;
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -86,9 +86,7 @@ namespace Domain.Interfaces.Repository
 
         private void NullChecker(object argument)
         {
-            if (argument == null)
-                throw new ArgumentNullException();
+            ArgumentNullException.ThrowIfNull(argument);
         }
-
     }
 }

@@ -17,8 +17,8 @@ namespace Core.Services.Abstraction
         Task<IEnumerable<Person>> GetAllAsync();
         Task<IEnumerable<Person>> GetByQueryAsync(Expression<Func<Person, bool>> predicate = null,
             Func<IQueryable<Person>, IOrderedQueryable<Person>> OrderBy = null);
-        Task RemoveAsync(int Id);
-        Task RemoveRangeAsync(IEnumerable<Person> entities);
-        Task<Person> UpdateAsync(Person entity);
+        Task<bool> RemoveAsync(int Id);
+        bool RemoveRangeAsync(IEnumerable<Person> entities);
+        Person Update(Person entity);
     }
 }
