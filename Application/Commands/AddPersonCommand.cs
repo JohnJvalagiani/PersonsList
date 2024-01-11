@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Commands
 {
-    public class AddPersonCommand : IRequest<ServiceResponse<ReadPersonData>>
+    public class AddPersonCommand : IRequest<ReadPersonData>
     {
         public CreatePerson CreatePerson { get; set; }
     }

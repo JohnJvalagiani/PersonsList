@@ -105,5 +105,16 @@ namespace Domain.Interfaces.Repository
                 throw new ArgumentNullException();
         }
 
+        public async Task<bool> RemoveConnectedPersonAsync(int PersonId, int connectedPersonId)
+        {
+            Person person = await GetByIdAsync(PersonId);
+
+            if (person != null)
+            {
+                person.ConnectedPerson.Remove(person.ConnectedPerson.FirstOrDefault(c=>c.Id == connectedPersonId));
+                Update(person);
+            }
+            return true;
+        }
     }
 }

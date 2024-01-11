@@ -10,8 +10,6 @@ namespace service.server.Services
 {
     public class PersonValidation : AbstractValidator<Person>
     {
-
-
         public PersonValidation()
         {
             RuleFor(x => x.FirstNameENG).Length(1, 250).NotEmpty().Matches(@"^[a-zA-Z-']*$").WithMessage("Enter only English Letters"); ;
@@ -22,11 +20,17 @@ namespace service.server.Services
             RuleFor(x => x.BirthDate).NotEmpty();
             RuleFor(x => x.City).NotEmpty();
             RuleFor(x => x.PersonalNumber).Length(11, 11).NotEmpty();
-
+            RuleFor(x => x.BirthDate).Must(BeAValidAge).WithMessage("Invalid age. Must be at least 18 years old.");
         }
 
-
-
-
+        private bool BeAValidAge(DateTime birthDate)
+        {
+            var age = DateTime.Today.Year - birthDate.Year;
+            if (birthDate.Date > DateTime.Today.AddYears(-age))
+            {
+                age--;
+            }
+            return age >= 18;
+        }
     }
 }

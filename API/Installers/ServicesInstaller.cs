@@ -29,10 +29,6 @@ namespace Service.Server.Installers
 
             services.AddScoped(typeof(IPersonsRepo<>), typeof(Repo<>));
 
-            services.AddScoped< IUnitOfWork , UnitOfWork>();
-
-            services.AddScoped<IPersonManagementsService, PersonManagementsService>();
-
             services.Configure<FilePathConfig>(configuration.GetSection("FilePathConfig"));
 
             services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<FilePathConfig>>().Value);

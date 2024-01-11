@@ -19,6 +19,7 @@ namespace Core.Services.Abstraction
         Task<IEnumerable<Person>> GetByQueryAsync(Expression<Func<Person, bool>> predicate = null,
             Func<IQueryable<Person>, IOrderedQueryable<Person>> OrderBy = null);
         Task<bool> RemoveAsync(int Id);
+        Task<bool> RemoveConnectedPersonAsync(int PersonId, int connectedPersonId);
         bool RemoveRangeAsync(IEnumerable<Person> entities);
         Person Update(Person entity);
         Task<IEnumerable<ConnectedPersonsReport>> GetConnectedPersonsReportByType(ConnectedPersonType connectedPersonType);

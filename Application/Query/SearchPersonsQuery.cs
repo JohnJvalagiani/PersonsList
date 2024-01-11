@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Core.Query
 {
-    public class SearchPersonsQuery : IRequest<ServiceResponse<IEnumerable<ReadPersonData>>>
+    public class SearchPersonsQuery : IRequest<IEnumerable<ReadPersonData>>
     {
         public DetailedSearchParameters DetailedSearchParameters { get; set; }
     }
