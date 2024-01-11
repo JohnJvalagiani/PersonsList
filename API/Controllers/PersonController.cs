@@ -4,14 +4,20 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Commands;
+using Core.Handlers;
+using Core.Query;
 using Core.Services.Abstraction;
 using Dtos.Dtos;
 using FluentValidation;
 using IG.Core.Data.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using service.server.Dtos;
 using service.server.Exceptions;
 using service.server.HelperClasses;
@@ -23,98 +29,107 @@ namespace service.server.Controllers
     [Route("api/Person")]
     public class PersonController : ControllerBase
     {
-        private readonly IPersonManagementsService _personManagementService;
+        private readonly IMediator _mediator;
         private readonly IStringLocalizer<PersonController> _localizer;
         private readonly ILogger<PersonController> _logger;
 
-        public PersonController(IPersonManagementsService personManagementService,
-            IStringLocalizer<PersonController> localizer,ILogger<PersonController> logger)
+        public PersonController(IMediator mediator, IStringLocalizer<PersonController> localizer, ILogger<PersonController> logger)
         {
-            _personManagementService = personManagementService;
-            _localizer = localizer;
             _logger = logger;
+            _mediator = mediator;
+            _localizer = localizer;
         }
 
         [HttpGet("Localization")]
         public IActionResult GetCurrentCultureDate()
         {
-
             var guid = Guid.NewGuid();
 
             return Ok(_localizer["RandomGUID", guid.ToString()].Value);
-
         }
 
-        [HttpPost("Search")]
-        public async Task<IActionResult> Search( DetailedSearchParameters detailSearchParameters)
+        [HttpGet("SearchPerson")]
+        public async Task<ActionResult<IEnumerable<ReadPersonData>>> SearchPerson([FromQuery] SearchPersonsQuery detailSearchParameters)
         {
-            var result = await _personManagementService.Search(detailSearchParameters);
+            _logger.LogInformation($"Searching for persons with parameters: {JsonConvert.SerializeObject(detailSearchParameters)}");
 
-            if (result.Success != true)
-                return NotFound(result);
+            var result = await _mediator.Send(detailSearchParameters);
+
+            _logger.LogInformation($"Search result: {JsonConvert.SerializeObject(result)}");
 
             return Ok(result);
         }
 
-
-        [HttpPost("Get All Person")]
-        public async Task<IActionResult> GetAllPerson([FromBody]PagingParameters pagingParameters)
+        [HttpGet("GetAllPerson")]
+        public async Task<ActionResult<List<ReadPersonData>>> GetAllPerson([FromQuery] GetAllPersonsQuery pagingParameters)
         {
-                _logger.LogInformation("Getting All Persons");
+            _logger.LogInformation($"Fetching all persons with parameters: {JsonConvert.SerializeObject(pagingParameters)}");
 
-                var persons = await _personManagementService.GetAllPersons(pagingParameters);
+            var persons = await _mediator.Send(pagingParameters);
 
-                return Ok(persons);
+            _logger.LogInformation($"Fetched {persons.Count} persons successfully.");
+
+            return Ok(persons);
         }
 
 
-        [HttpPost("Add person")]
-        public async Task<IActionResult> AddPerson([FromBody]CreatePerson person) 
+        [HttpPost("AddPerson")]
+        public async Task<ActionResult<ReadPersonData>> AddPerson([FromBody] AddPersonCommand person)
         {
+            _logger.LogInformation($"Adding Person: {JsonConvert.SerializeObject(person)}");
 
-          _logger.LogInformation("Adding Person ");
+            var newPerson = await _mediator.Send(person);
 
-          var newPerson=await  _personManagementService.AddPerson(person);
-              
-          return Created(nameof(Person), newPerson);
+            _logger.LogInformation($"Added Person with ID: {newPerson.Id}");
+
+            return Created(nameof(Person), newPerson);
         }
 
-        [HttpGet("Get Person By Id {id}")]
-        public async Task<IActionResult> GetPersonById(int id)
+        [HttpGet("GetPersonById")]
+        public async Task<ActionResult> GetPersonById([FromBody] GetPersonByIdQuery getPersonByIdQuery )
         {
-            _logger.LogInformation( "Get  Person {Id}", id);
+            _logger.LogInformation($"Fetching person by ID: {getPersonByIdQuery.PersonId}");
 
-            var thePerson = await _personManagementService.GetPersonById(id);
-          
+            var thePerson = await _mediator.Send(getPersonByIdQuery);
+
+            _logger.LogInformation($"Fetched person with ID {thePerson.Id}: {JsonConvert.SerializeObject(thePerson)}");
+
             return Ok(thePerson);
         }
 
-        [HttpDelete("Delete Person {id}")]
-        public async Task<IActionResult> DeletePerson(int id)
+        [HttpDelete("DeletePerson")]
+        public async Task<IActionResult> DeletePerson(DeletePersonCommand deletePersonCommand)
         {
-         
-                _logger.LogInformation( "Delete  Person {Id}", id);
-                
-               var person = await _personManagementService.DeletePerson(id);
+            _logger.LogInformation($"Deleting person with ID: {deletePersonCommand.PersonId}");
 
-                return NoContent();
+            await _mediator.Send(deletePersonCommand);
+
+            _logger.LogInformation($"Deleted person with ID: {deletePersonCommand.PersonId}");
+
+            return NoContent();
         }
 
 
-        [HttpPut("Update Person")]
-        public async Task<IActionResult> EditPerson([FromBody] UpdatePerson person)
+        [HttpPut("UpdatePerson")]
+        public async Task<IActionResult> EditPerson([FromBody] UpdatePersonCommand person)
         {
-            _logger.LogInformation( "Update  Person {Id}", person.Id);
+            _logger.LogInformation($"Updating person with ID: {person.UpdatePerson.Id}");
 
-            var thePerson = await _personManagementService.UpdatePerson(person);
+            var thePerson = await _mediator.Send(person);
 
-             return Ok(thePerson);
+            _logger.LogInformation($"Updated person with ID {person.UpdatePerson.Id}: {JsonConvert.SerializeObject(person.UpdatePerson)}");
+
+            return Ok(thePerson);
         }
 
-        [HttpGet("Get  Persons Report")]
-        public async Task<IActionResult> GetPersonsReport( ConnectedPersonType connectedPersonType)
+        [HttpGet("GetPersonsReport")]
+        public async Task<IActionResult> GetPersonsReport(GetConnectedPersonsReportQuery getConnectedPersonsReportQuery)
         {
-            var result = await _personManagementService.GetConnectedPersonsReport( connectedPersonType);
+            _logger.LogInformation($"Fetching persons report with parameters: {JsonConvert.SerializeObject(getConnectedPersonsReportQuery)}");
+
+            var result = await _mediator.Send(getConnectedPersonsReportQuery);
+
+            _logger.LogInformation($"Fetched persons report successfully.");
 
             return Ok(result);
         }

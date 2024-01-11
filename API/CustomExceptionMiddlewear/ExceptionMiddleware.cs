@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Core.CustomExceptions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -19,10 +20,8 @@ namespace Service.Server.CustomExceptionMiddlewear
 
         public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
         {
-
             _next = next;
             _logger = logger;
-
         }
 
 
@@ -32,6 +31,17 @@ namespace Service.Server.CustomExceptionMiddlewear
             try
             {
                 await _next(context);
+            }
+            catch (PersonNotFoundException ex)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                context.Response.ContentType = "application/json";
+                var errorResponse = new ErrorResponse
+                {
+                    Message = ex.Message,
+                    Details = ex.InnerException.Message
+                };
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(errorResponse));
             }
             catch (ValidationException ex)
             {

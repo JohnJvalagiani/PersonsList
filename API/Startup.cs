@@ -15,6 +15,8 @@ using Service.Server.Installers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 
 namespace service.server
@@ -30,6 +32,9 @@ namespace service.server
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMediatR(cfg =>
+             cfg.RegisterServicesFromAssembly(typeof(Ping).Assembly));
+
             services.InstallerServicesInAssembly(Configuration);
 
             services.AddControllers();

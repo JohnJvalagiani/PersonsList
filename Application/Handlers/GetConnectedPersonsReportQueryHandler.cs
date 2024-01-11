@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Core.Dtos;
 using Core.Models;
 using Core.Query;
 using Core.Services.Abstraction;

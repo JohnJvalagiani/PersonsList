@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Core.Commands;
 using Core.Services.Abstraction;
 using Dtos.Dtos;
 using IG.Core.Data.Entities;
@@ -31,24 +32,28 @@ namespace service.server.Controllers
             _logger = logger;
         } 
 
-        [HttpPost("Add Connected Person")]
-        public async Task<IActionResult> Add(int personId, WriteConnectedPerson connectedPerson)
+        [HttpPost("AddConnectedPerson")]
+        public async Task<IActionResult> Add(AddConnectedPersonCommand addConnectedPersonCommand)
         {
-              _logger.LogInformation("Add Connected Person {Id}", personId);
+            _logger.LogInformation($"Adding connected person for person with ID: {addConnectedPersonCommand.Id}");
 
-              var result = await _personManagementsService.AddConnectedPerson(personId,connectedPerson);
-           
-              return Created(nameof(ConnectedPerson), connectedPerson);
+            var result = await _mediator.Send(addConnectedPersonCommand);
+
+            _logger.LogInformation($"Added connected person for person with ID {addConnectedPersonCommand.Id}");
+
+            return Created(nameof(ReadConnectedPerson), result);
         }
 
-        [HttpDelete("Remove Connected Person")]
-        public async Task<IActionResult> Remove(int connectedPersonId)
+        [HttpDelete("RemoveConnectedPerson")]
+        public async Task<IActionResult> Remove(RemoveConnectedPersonCommand removeConnectedPersonCommand)
         {
-                _logger.LogInformation(message: "Delete Connected Person {Id}", connectedPersonId);
+            _logger.LogInformation($"Removing connected person with ID: {removeConnectedPersonCommand.ConnectedPersonId} from person with ID: {removeConnectedPersonCommand.PersonId}");
 
-                var result = await _personManagementsService.RemoveConnectedPerson(connectedPersonId);
+            var result = await _mediator.Send(removeConnectedPersonCommand);
 
-                return NoContent();
+            _logger.LogInformation($"Removed connected person with ID: {removeConnectedPersonCommand.ConnectedPersonId} from person with ID: {removeConnectedPersonCommand.PersonId}");
+
+            return NoContent();
         }
 
         }
