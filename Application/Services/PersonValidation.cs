@@ -19,7 +19,7 @@ namespace service.server.Services
             RuleFor(x => x.PhoneNumber).Length(4,50).NotEmpty().Matches("^[0-9]*$");
             RuleFor(x => x.BirthDate).NotEmpty();
             RuleFor(x => x.City).NotEmpty();
-            RuleFor(x => x.PersonalNumber).Length(11, 11).NotEmpty();
+            RuleFor(x => x.PersonalNumber).Length(9, 11).NotEmpty();
             RuleFor(x => x.BirthDate).Must(BeAValidAge).WithMessage("Invalid age. Must be at least 18 years old.");
         }
 

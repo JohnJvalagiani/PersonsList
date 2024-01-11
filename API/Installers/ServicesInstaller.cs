@@ -7,6 +7,7 @@ using Core.Services.Abstraction;
 using Domain.Interfaces.Repository;
 using Domain.Models;
 using Dtos.Dtos;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -25,7 +26,10 @@ namespace Service.Server.Installers
     {
         public void InstallerService(IServiceCollection services, IConfiguration configuration)
         {
-
+            services.AddControllers()
+          .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<PersonValidation>());
+            services.AddControllers()
+          .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ConnectedPersonValidation>());
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddScoped<PersonValidation>();
@@ -40,7 +44,7 @@ namespace Service.Server.Installers
 
             services.AddTransient<IRequestHandler<AddConnectedPersonCommand, ServiceResponse<ReadConnectedPerson>>, AddConnectedPersonCommandHandler>();
 
-            services.AddTransient< IRequestHandler < AddPersonCommand, ReadPersonData >, AddPersonCommandHandler >();
+            services.AddTransient< IRequestHandler <AddPersonCommand, ReadPersonData >, AddPersonCommandHandler >();
 
             services.AddTransient<IRequestHandler<DeletePersonCommand, bool>, DeletePersonCommandHandler>();
 
@@ -59,6 +63,8 @@ namespace Service.Server.Installers
             services.AddTransient<IRequestHandler<UpdatePersonPictureCommand, string>, UpdatePersonPictureCommandHandler>();
 
             services.AddTransient<IRequestHandler<UploadPersonPictureCommand, string>, UploadPersonPictureCommandHandler>();
+
+
 
 
         }

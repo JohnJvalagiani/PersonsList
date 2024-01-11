@@ -31,7 +31,11 @@ namespace Domain.Interfaces.Repository
             return _entity.Entity;
         }
 
-        public  async Task<IEnumerable<Person>> GetAllAsync() => await _set.ToListAsync();
+        public async Task<IEnumerable<Person>> GetAllAsync()
+        {
+               var response = await _set.ToListAsync();
+                return response;
+        }
 
         public  async Task<Person> GetByIdAsync(int Id)
         {
@@ -67,7 +71,7 @@ namespace Domain.Interfaces.Repository
         {
                 NullChecker(entity);
                 var _entity = _set.Update(entity);
-                return _entity.Entity;
+            return _entity.Entity;
         }
 
         private async Task<Person> FindElement(int Id) => await _set.FindAsync(Id);
@@ -76,12 +80,12 @@ namespace Domain.Interfaces.Repository
         {
              NullChecker(entities);
             _set.RemoveRange(entities);
-             return true;
+            return true;
         }
 
         public async Task AddRangeAsync(IEnumerable<Person> entities)
         {
-           await _set.AddRangeAsync(entities);
+            await _set.AddRangeAsync(entities);
         }
 
         public  async Task<IEnumerable<Person>> GetByQueryAsync(Expression<Func<Person, bool>> filter = null, Func<IQueryable<Person>,

@@ -40,7 +40,7 @@ namespace Infrastructure.Data.Context
         {
             // After executing this line all the changes
             // performed through the DbContext will be committed
-            _ = await base.SaveChangesAsync(cancellationToken);
+            var res = await base.SaveChangesAsync(cancellationToken);
 
             return true;
         }

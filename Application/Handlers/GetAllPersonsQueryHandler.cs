@@ -36,7 +36,7 @@ namespace Core.Handlers
 
             var thePersons = persons.Select(p => _mapper.Map<ReadPersonData>(p));
             var result = PagedList<ReadPersonData>
-            .ToPagedList(thePersons.AsQueryable(), request.PagingParameters.PageNumber, request.PagingParameters.PageSize);
+            .ToPagedList(thePersons.AsQueryable(), request.PageNumber, request.PageSize);
 
             return result;
         }

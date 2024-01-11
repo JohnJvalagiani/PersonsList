@@ -61,7 +61,7 @@ namespace service.server.Controllers
         }
 
         [HttpGet("GetAllPerson")]
-        public async Task<ActionResult<List<ReadPersonData>>> GetAllPerson([FromQuery] GetAllPersonsQuery pagingParameters)
+        public async Task<ActionResult<List<ReadPersonData>>> GetAllPerson([FromQuery]GetAllPersonsQuery pagingParameters)
         {
             _logger.LogInformation($"Fetching all persons with parameters: {JsonConvert.SerializeObject(pagingParameters)}");
 
@@ -86,7 +86,7 @@ namespace service.server.Controllers
         }
 
         [HttpGet("GetPersonById")]
-        public async Task<ActionResult> GetPersonById([FromBody] GetPersonByIdQuery getPersonByIdQuery )
+        public async Task<ActionResult> GetPersonById([FromQuery] GetPersonByIdQuery getPersonByIdQuery )
         {
             _logger.LogInformation($"Fetching person by ID: {getPersonByIdQuery.PersonId}");
 

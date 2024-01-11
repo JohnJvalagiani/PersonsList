@@ -12,6 +12,10 @@ namespace Core.Query
 {
     public class SearchPersonsQuery : IRequest<IEnumerable<ReadPersonData>>
     {
-        public DetailedSearchParameters DetailedSearchParameters { get; set; }
+        public PagingParameters pagingParameters { get; set; }
+        public person SearchPersonsBy { get; set; }
+        public person OrderPersonsBy { get; set; }
+        public string SearchValue { get; set; }
+        //public DetailedSearchParameters DetailedSearchParameters { get; set; }
     }
 }

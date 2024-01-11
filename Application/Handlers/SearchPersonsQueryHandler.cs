@@ -39,16 +39,16 @@ namespace Core.Handlers
         };
 
                 // Determine the orderByFunc using the dictionary or fallback to a default order
-                var orderByFunc = orderByFunctions.GetValueOrDefault(request.DetailedSearchParameters.OrderPersonsBy, q => q.OrderBy(p => p.FirstNameENG));
+                var orderByFunc = orderByFunctions.GetValueOrDefault(request.OrderPersonsBy, q => q.OrderBy(p => p.FirstNameENG));
 
-                var predicate = GenericExpressionTree.CreateWhereClause<Person>(request.DetailedSearchParameters.SearchPersonsBy.ToString(), request.DetailedSearchParameters.SearchValue);
+                var predicate = GenericExpressionTree.CreateWhereClause<Person>(request.SearchPersonsBy.ToString(), request.SearchValue);
 
                 var persons = await _personsRepo.GetByQueryAsync(predicate, orderByFunc);
 
                 var thePersons = persons.Select(p => _mapper.Map<ReadPersonData>(p));
 
                 var result = PagedList<ReadPersonData>
-                    .ToPagedList(thePersons.AsQueryable(), request.DetailedSearchParameters.pagingParameters.PageNumber, request.DetailedSearchParameters.pagingParameters.PageSize);
+                    .ToPagedList(thePersons.AsQueryable(), request.pagingParameters.PageNumber, request.pagingParameters.PageSize);
                 
             return result;
         }

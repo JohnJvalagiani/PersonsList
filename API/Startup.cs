@@ -41,11 +41,14 @@ namespace service.server
          
             services.AddHttpClient();
 
-            services.AddMvc()
-                    .AddFluentValidation(fvc =>
-                fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("en");
+                options.SupportedCultures = new List<CultureInfo> { new CultureInfo("en") };
+                options.SupportedUICultures = new List<CultureInfo> { new CultureInfo("ka") };
+            });
 
-          
+
             services.AddSwaggerGen();
 
 
@@ -65,18 +68,7 @@ namespace service.server
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            var cultures = new List<CultureInfo> {
-    new CultureInfo("en"),
-    new CultureInfo("ka")
-               };
-            app.UseRequestLocalization(options => {
-                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
-                options.SupportedCultures = cultures;
-                options.SupportedUICultures = cultures;
-            });
-
-
+//           
             app.ConfigurationCustomExceptionMiddleware();
 
             app.UseSwagger(c =>

@@ -9,5 +9,6 @@ namespace Dtos.Dtos
     public class WriteConnectedPerson
     {
         public ConnectedPersonType PersonType { get; set; }
+        public int PersonId { get; set; }
     }
 }

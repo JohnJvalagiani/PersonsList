@@ -14,9 +14,9 @@ namespace Infrastructure.Configuration
 
             builder.ToTable("Person");
             builder.HasKey(u => u.Id);
-            builder.Property(u => u.FirstNameENG).HasMaxLength(50).IsRequired();
-            builder.Property(u => u.FirstNameGEO).IsRequired();
-            builder.Property(u => u.Sex).IsRequired();
+            //builder.Property(u => u.FirstNameENG).HasMaxLength(50).IsRequired();
+            //builder.Property(u => u.FirstNameGEO).IsRequired();
+            //builder.Property(u => u.Sex).IsRequired();
 
         }
     

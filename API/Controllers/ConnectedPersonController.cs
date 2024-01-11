@@ -28,10 +28,10 @@ namespace service.server.Controllers
         {
             _mediator = mediator;
             _logger = logger;
-        } 
+        }
 
         [HttpPost("AddConnectedPerson")]
-        public async Task<IActionResult> Add(AddConnectedPersonCommand addConnectedPersonCommand)
+        public async Task<IActionResult> Add([FromBody] AddConnectedPersonCommand addConnectedPersonCommand)
         {
             _logger.LogInformation($"Adding connected person for person with ID: {addConnectedPersonCommand.Id}");
 

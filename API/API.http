@@ -1,4 +1,4 @@
-@API_HostAddress = https://localhost:7224
+﻿@API_HostAddress = https://localhost:44319
 
 GET {{API_HostAddress}}/weatherforecast/
 Accept: application/json
@@ -6,5 +6,16 @@ Accept: application/json
 ###
 
 GET {{API_HostAddress}}/api/values
+
+###
+
+POST {{API_HostAddress}}/api/Person/AddPerson
+Content-Type: application/json
+
+{
+  
+ 
+
+}
 
 ###
