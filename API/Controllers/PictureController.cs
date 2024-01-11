@@ -21,7 +21,6 @@ namespace service.server.Controllers
     public class PictureController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IPersonManagementsService _personManagementService;
         private readonly ILogger<PictureController> _logger;
 
         public PictureController(ILogger<PictureController> logger, IMediator mediator)

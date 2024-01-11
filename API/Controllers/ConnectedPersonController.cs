@@ -22,12 +22,10 @@ namespace service.server.Controllers
     public class ConnectedPersonController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IPersonManagementsService _personManagementsService;
         private readonly ILogger<ConnectedPersonController> _logger;
      
-        public ConnectedPersonController(IMediator mediator,ILogger<ConnectedPersonController> logger,IPersonManagementsService personManagementsService)
+        public ConnectedPersonController(IMediator mediator,ILogger<ConnectedPersonController> logger)
         {
-           _personManagementsService = personManagementsService;
             _mediator = mediator;
             _logger = logger;
         } 
